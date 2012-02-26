@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Agora Exchange for Online Managed Services -->
+
+<!-- Copyright (C) 2012 Sakari A. Maaranen -->
+
+<!-- This library is free software; you can redistribute it and/or modify it 
+  under the terms of the GNU Lesser General Public License as published by the 
+  Free Software Foundation, either version 3 of the License, or (at your option) 
+  any later version. -->
+
+<!-- This library is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+  FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
+  details. -->
+
+<!-- You should have received a copy of the GNU Lesser General Public License 
+  along with this library. If not, see <http://www.gnu.org/licenses/>. -->
+
+<xs:schema targetNamespace="http://www.agora-exchange.org/XML/Exchange"
+  xmlns="http://www.agora-exchange.org/XML/Exchange" xmlns:agora="http://www.agora-exchange.org/XML"
+  xmlns:supply="http://www.agora-exchange.org/XML/Supply" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc" elementFormDefault="qualified"
+  version="0.1" xml:lang="EN">
+
+  <xs:annotation>
+    <xs:documentation>Work in progress: This Agora XML schema specification
+      should semantically conform to the Agora concept definition. In case
+      you find an issue or have ideas how to enhance either the concept or
+      this specification, please check if it's already reported at
+      http://github.com/sakaal/agora/issues and report a new issue in case
+      it's not.
+    </xs:documentation>
+    <xs:appinfo>
+      <jaxb:globalBindings>
+        <jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"/>
+      </jaxb:globalBindings>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:import schemaLocation="agora.xsd" namespace="http://www.agora-exchange.org/XML"/>
+  <xs:import schemaLocation="agora-supply.xsd"
+    namespace="http://www.agora-exchange.org/XML/Supply"/>
+
+  <xs:complexType name="ResourcePool">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="agora:Record">
+        <xs:sequence>
+          <xs:element name="type" type="xs:token">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="typeName"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="name" type="xs:token">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="poolName"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="provider" type="xs:token">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="providerName"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="spec" type="agora:Association"
+            maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="specifications"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Reservation">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="agora:Record">
+        <xs:sequence>
+          <xs:element name="plan" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="resourcePlanId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="appointed">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="appointedPools"/>
+              </xs:appinfo>
+            </xs:annotation>
+            <xs:simpleType>
+              <xs:list itemType="xs:token"/>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="credential" type="agora:Association"
+            maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="credentials"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="require" type="agora:Association"
+            maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="requirements"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="resources">
+            <xs:simpleType>
+              <xs:list itemType="agora:UUID"/>
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Solution">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="agora:Record">
+        <xs:sequence>
+          <xs:element name="reservation" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="reservationId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="planned" type="agora:UTC"/>
+          <xs:element name="decided" type="agora:UTC"/>
+          <xs:element name="accepted" type="xs:boolean"/>
+          <xs:element name="concluded" type="agora:UTC"/>
+          <xs:element name="resources">
+            <xs:simpleType>
+              <xs:list itemType="agora:UUID"/>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="dependencies">
+            <xs:simpleType>
+              <xs:list itemType="agora:UUID"/>
+            </xs:simpleType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ServiceDeclaration" abstract="true">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="provider" type="xs:token">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="providerName"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="type" type="supply:TypeDefinition">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="supportedType"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="param" type="agora:ParameterDeclaration"
+        maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="operatingParameters"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ResourceDeclaration">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="ServiceDeclaration">
+        <xs:sequence>
+          <xs:element name="security" type="xs:token">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="securityDomain"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="pool" type="ResourcePool" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="supply"></jaxb:property>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DependencyDeclaration">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="ServiceDeclaration">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

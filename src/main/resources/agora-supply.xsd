@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Agora Exchange for Online Managed Services -->
+
+<!-- Copyright (C) 2012 Sakari A. Maaranen -->
+
+<!-- This library is free software; you can redistribute it and/or modify it 
+  under the terms of the GNU Lesser General Public License as published by the 
+  Free Software Foundation, either version 3 of the License, or (at your option) 
+  any later version. -->
+
+<!-- This library is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+  FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
+  details. -->
+
+<!-- You should have received a copy of the GNU Lesser General Public License 
+  along with this library. If not, see <http://www.gnu.org/licenses/>. -->
+
+<xs:schema targetNamespace="http://www.agora-exchange.org/XML/Supply"
+  xmlns="http://www.agora-exchange.org/XML/Supply" xmlns:agora="http://www.agora-exchange.org/XML"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc" elementFormDefault="qualified"
+  version="0.1" xml:lang="EN">
+
+  <xs:annotation>
+    <xs:documentation>Work in progress: This Agora XML schema specification
+      should semantically conform to the Agora concept definition. In case
+      you find an issue or have ideas how to enhance either the concept or
+      this specification, please check if it's already reported at
+      http://github.com/sakaal/agora/issues and report a new issue in case
+      it's not.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:import schemaLocation="agora.xsd" namespace="http://www.agora-exchange.org/XML"/>
+
+  <xs:complexType name="TypeDefinition" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="agora:Record">
+        <xs:sequence>
+          <xs:element name="doc" type="agora:Description">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="description"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:sequence>
+            <xs:element name="param" type="agora:ParameterDeclaration"
+              maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <jaxb:property name="provisioningParameters"/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="name" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:token"/>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DependencyRole">
+    <xs:sequence>
+      <xs:element name="type" type="xs:token">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="typeName"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="role" type="xs:token">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="roleName"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ResourceType">
+    <xs:complexContent>
+      <xs:extension base="TypeDefinition"/>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DependencyType">
+    <xs:complexContent>
+      <xs:extension base="TypeDefinition">
+        <xs:sequence>
+          <xs:element name="consumer" type="DependencyRole"/>
+          <xs:element name="producer" type="DependencyRole"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="LifeCycleStage">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc>Enumerates the valid life cycle stage names for an
+          effective instance.
+        </jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:maxLength value="13"/>
+      <xs:enumeration value="planning"/>
+      <xs:enumeration value="reserved"/>
+      <xs:enumeration value="provisioning"/>
+      <xs:enumeration value="operative"/>
+      <xs:enumeration value="dysfunctional"/>
+      <xs:enumeration value="vacating"/>
+      <xs:enumeration value="terminated"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="EffectiveInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="agora:Record">
+        <xs:sequence>
+          <xs:element name="type" type="xs:token">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="typeName"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:sequence>
+            <xs:element name="set" type="agora:Association"
+              maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <jaxb:property name="assignment"/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+          <xs:element name="stage" type="LifeCycleStage">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="lifeCycleStage"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:sequence>
+            <xs:element name="at" type="agora:Association"
+              maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <jaxb:property name="state"/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+          <xs:element name="solution" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="solutionId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EffectiveDependency">
+    <xs:complexContent>
+      <xs:extension base="EffectiveInstance">
+        <xs:sequence>
+          <xs:element name="consumer" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="consumerId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="producer" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="producerId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EffectiveResource">
+    <xs:complexContent>
+      <xs:extension base="EffectiveInstance">
+        <xs:sequence>
+          <xs:element name="reservation" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="reservationId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="pool" type="agora:UUID">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="resourcePoolId"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:sequence>
+            <xs:element name="depend" type="EffectiveDependency"
+              minOccurs="0" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <jaxb:property name="status"></jaxb:property>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

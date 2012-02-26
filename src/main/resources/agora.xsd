@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Agora Exchange for Online Managed Services -->
+
+<!-- Copyright (C) 2012 Sakari A. Maaranen -->
+
+<!-- This library is free software; you can redistribute it and/or modify it 
+  under the terms of the GNU Lesser General Public License as published by the 
+  Free Software Foundation, either version 3 of the License, or (at your option) 
+  any later version. -->
+
+<!-- This library is distributed in the hope that it will be useful, but WITHOUT 
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+  FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more 
+  details. -->
+
+<!-- You should have received a copy of the GNU Lesser General Public License 
+  along with this library. If not, see <http://www.gnu.org/licenses/>. -->
+
+<xs:schema targetNamespace="http://www.agora-exchange.org/XML"
+  xmlns="http://www.agora-exchange.org/XML" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jaxb:extensionBindingPrefixes="xjc" elementFormDefault="qualified"
+  version="0.1" xml:lang="EN">
+
+  <xs:annotation>
+    <xs:documentation>Work in progress: This Agora XML schema specification
+      should semantically conform to the Agora concept definition. In case
+      you find an issue or have ideas how to enhance either the concept or
+      this specification, please check if it's already reported at
+      http://github.com/sakaal/agora/issues and report a new issue in case
+      it's not.
+    </xs:documentation>
+    <xs:appinfo>
+      <jaxb:globalBindings>
+        <jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"/>
+      </jaxb:globalBindings>
+    </xs:appinfo>
+  </xs:annotation>
+
+  <xs:simpleType name="UTC">
+    <xs:annotation>
+      <xs:documentation>A strict time stamp format conforming to ISO 8601 in
+        UTC only.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:dateTime">
+      <xs:pattern
+        value="[1-9]\d{3,}-[01]\d-[0-3]\dT([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d{1,6})?Z"></xs:pattern>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UUID">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="Record" abstract="true">
+    <xs:sequence>
+      <xs:element name="created" type="UTC"/>
+      <xs:element name="updated" type="UTC"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="UUID"/>
+  </xs:complexType>
+
+  <xs:complexType name="Translation">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:property name="text"/>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:token">
+        <xs:attribute name="lang" type="xs:language" use="required">
+          <xs:annotation>
+            <xs:appinfo>
+              <jaxb:property name="languageCode"/>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="Description">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:class>
+          <jaxb:javadoc>Declares a list of terms and definitions in
+            different languages.
+          </jaxb:javadoc>
+        </jaxb:class>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:choice maxOccurs="unbounded">
+      <xs:annotation>
+        <xs:appinfo>
+          <jaxb:property name="translations"/>
+        </xs:appinfo>
+      </xs:annotation>
+      <xs:element name="dt" type="Translation">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:class name="Term">
+              <jaxb:javadoc>Declares a synonymous term in a given
+                language.
+              </jaxb:javadoc>
+            </jaxb:class>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="dd" type="Translation">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:class name="Definition">
+              <jaxb:javadoc>Provides a definition in a given language.
+              </jaxb:javadoc>
+            </jaxb:class>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:simpleType name="AccessModifier">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc>Enumerates valid values for provider and client access
+          modifiers in parameter declarations.
+        </jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:maxLength value="16"/>
+      <xs:enumeration value="optional"/>
+      <xs:enumeration value="read-only"/>
+      <xs:enumeration value="required"/>
+      <xs:enumeration value="undisclosed"/>
+      <xs:enumeration value="optional-default"/>
+      <xs:enumeration value="required-default"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="ParameterDeclaration">
+    <xs:sequence>
+      <xs:element name="doc" type="Description" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="description"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="domain" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property generateIsSetMethod="true"/>
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:annotation>
+            <xs:appinfo>
+              <xjc:javaType adapter="org.agora_exchange.validation.DomainConverter"
+                name="org.agora_exchange.validation.Validator"/>
+            </xs:appinfo>
+          </xs:annotation>
+          <xs:restriction base="xs:token"/>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="recommend" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="recommendedValue"
+              generateIsSetMethod="true"/>
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:maxLength value="250"></xs:maxLength>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="client" type="AccessModifier" minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="clientAccess"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="provider" type="AccessModifier"
+        minOccurs="0">
+        <xs:annotation>
+          <xs:appinfo>
+            <jaxb:property name="providerAccess"/>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="fixed" minOccurs="0">
+        <xs:simpleType>
+          <xs:restriction base="xs:boolean"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:token" use="required">
+      <xs:annotation>
+        <xs:appinfo>
+          <jaxb:property name="parameterName"/>
+        </xs:appinfo>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Association">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc>
+          Associates a key with a value. TODO: We would like to
+          use this as a java.util.HashMap entry, but the JAXB generation
+          support for this is still lacking.
+        </jaxb:javadoc>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="key" type="xs:token"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>
