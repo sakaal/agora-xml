@@ -20,8 +20,9 @@
 <xs:schema targetNamespace="http://www.agora-exchange.org/XML"
   xmlns="http://www.agora-exchange.org/XML" xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jaxb:extensionBindingPrefixes="xjc" elementFormDefault="qualified"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  jaxb:extensionBindingPrefixes="xjc hj orm" elementFormDefault="qualified"
   version="0.1" xml:lang="EN">
 
   <xs:annotation>
@@ -33,7 +34,8 @@
       it's not.
     </xs:documentation>
     <xs:appinfo>
-      <jaxb:globalBindings>
+      <jaxb:globalBindings localScoping="toplevel">
+        <jaxb:serializable/>
         <jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"/>
       </jaxb:globalBindings>
     </xs:appinfo>
@@ -58,6 +60,13 @@
   </xs:simpleType>
 
   <xs:complexType name="Record" abstract="true">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:entity>
+          <orm:table name="po"/>
+        </hj:entity>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:sequence>
       <xs:element name="created" type="UTC"/>
       <xs:element name="updated" type="UTC"/>
@@ -226,6 +235,37 @@
         <xs:attribute name="key" type="xs:token"/>
       </xs:extension>
     </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="TypeDefinition" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="Record">
+        <xs:sequence>
+          <xs:element name="doc" type="Description">
+            <xs:annotation>
+              <xs:appinfo>
+                <jaxb:property name="description"/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:sequence>
+            <xs:element name="param" type="ParameterDeclaration"
+              maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:appinfo>
+                  <jaxb:property name="provisioningParameters"/>
+                </xs:appinfo>
+              </xs:annotation>
+            </xs:element>
+          </xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="name" use="required">
+          <xs:simpleType>
+            <xs:restriction base="xs:token"/>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
 </xs:schema>
