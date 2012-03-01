@@ -10,7 +10,7 @@
 
   <groupId>org.agora-exchange.api</groupId>
   <artifactId>agora-xml</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Agora XML</name>
   <url>http://www.agora-exchange.org/api/xml</url>
