@@ -96,12 +96,13 @@
           </execution>
         </executions>
         <configuration>
-        <variant>jpa2</variant>
+          <variant>jpa2</variant>
           <extension>true</extension>
-          <schemaExcludes>
-            <exclude>XMLSchema.xsd</exclude>
-            <exclude>*.dtd</exclude>
-          </schemaExcludes>
+          <schemaIncludes>
+            <include>agora.xsd</include>
+            <include>agora-supply.xsd</include>
+            <include>agora-exchange.xsd</include>
+          </schemaIncludes>
           <roundtripTestClassName>RoundtripTest</roundtripTestClassName>
         </configuration>
       </plugin>
