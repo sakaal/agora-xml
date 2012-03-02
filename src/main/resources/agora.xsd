@@ -62,22 +62,45 @@
   <xs:complexType name="Record" abstract="true">
     <xs:annotation>
       <xs:appinfo>
-        <hj:entity>
-          <orm:table name="po"/>
-        </hj:entity>
+        <hj:mapped-superclass/>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="created" type="UTC"/>
-      <xs:element name="updated" type="UTC"/>
+      <xs:element name="created" type="UTC">
+        <xs:annotation>
+          <xs:appinfo>
+            <hj:basic>
+              <orm:column name="created"/>
+            </hj:basic>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="updated" type="UTC">
+        <xs:annotation>
+          <xs:appinfo>
+            <hj:basic>
+              <orm:column name="updated"/>
+            </hj:basic>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
-    <xs:attribute name="id" type="UUID"/>
+    <xs:attribute name="id" type="UUID">
+      <xs:annotation>
+        <xs:appinfo>
+          <hj:id>
+            <orm:column name="rid"/>
+          </hj:id>
+        </xs:appinfo>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
 
   <xs:complexType name="Translation">
     <xs:annotation>
       <xs:appinfo>
         <jaxb:property name="text"/>
+        <hj:embeddable/>
       </xs:appinfo>
     </xs:annotation>
     <xs:simpleContent>

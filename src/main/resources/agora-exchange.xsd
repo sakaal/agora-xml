@@ -21,7 +21,9 @@
   xmlns="http://www.agora-exchange.org/XML/Exchange" xmlns:agora="http://www.agora-exchange.org/XML"
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
   jaxb:version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jaxb:extensionBindingPrefixes="xjc" elementFormDefault="qualified"
+  xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  jaxb:extensionBindingPrefixes="xjc hj orm" elementFormDefault="qualified"
   version="0.1" xml:lang="EN">
 
   <xs:annotation>
@@ -83,6 +85,9 @@
     <xs:annotation>
       <xs:appinfo>
         <jaxb:javadoc></jaxb:javadoc>
+        <hj:entity>
+          <orm:table name="reservation"/>
+        </hj:entity>
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent>
@@ -135,6 +140,9 @@
     <xs:annotation>
       <xs:appinfo>
         <jaxb:javadoc></jaxb:javadoc>
+        <hj:entity>
+          <orm:table name="solution"/>
+        </hj:entity>
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent>
@@ -170,6 +178,7 @@
     <xs:annotation>
       <xs:appinfo>
         <jaxb:javadoc></jaxb:javadoc>
+        <hj:ignored/>
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
