@@ -42,6 +42,9 @@
     <xs:annotation>
       <xs:appinfo>
         <jaxb:javadoc></jaxb:javadoc>
+        <hj:entity>
+          <orm:table name="resource_pool"/>
+        </hj:entity>
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent>
@@ -68,11 +71,11 @@
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
-          <xs:element name="spec" type="agora:Association"
-            maxOccurs="unbounded">
+          <xs:element name="specs">
             <xs:annotation>
               <xs:appinfo>
                 <jaxb:property name="specifications"/>
+                <xjc:dom/>
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -110,19 +113,17 @@
               <xs:list itemType="xs:token"/>
             </xs:simpleType>
           </xs:element>
-          <xs:element name="credential" type="agora:Association"
-            maxOccurs="unbounded">
+          <xs:element name="credentials">
             <xs:annotation>
               <xs:appinfo>
-                <jaxb:property name="credentials"/>
+                <xjc:dom/>
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
-          <xs:element name="require" type="agora:Association"
-            maxOccurs="unbounded">
+          <xs:element name="requirements">
             <xs:annotation>
               <xs:appinfo>
-                <jaxb:property name="requirements"/>
+                <xjc:dom/>
               </xs:appinfo>
             </xs:annotation>
           </xs:element>

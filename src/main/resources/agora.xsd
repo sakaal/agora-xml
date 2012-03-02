@@ -20,7 +20,8 @@
 <xs:schema targetNamespace="http://www.agora-exchange.org/XML"
   xmlns="http://www.agora-exchange.org/XML" xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.1"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  xmlns:hj="http://hyperjaxb3.jvnet.org/ejb/schemas/customizations"
   xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
   jaxb:extensionBindingPrefixes="xjc hj orm" elementFormDefault="qualified"
   version="0.1" xml:lang="EN">
@@ -85,7 +86,7 @@
         </xs:annotation>
       </xs:element>
     </xs:sequence>
-    <xs:attribute name="id" type="UUID">
+    <xs:attribute name="id" type="UUID" use="required">
       <xs:annotation>
         <xs:appinfo>
           <hj:id>
@@ -100,7 +101,7 @@
     <xs:annotation>
       <xs:appinfo>
         <jaxb:property name="text"/>
-        <hj:embeddable/>
+        <hj:ignored/>
       </xs:appinfo>
     </xs:annotation>
     <xs:simpleContent>
@@ -124,9 +125,10 @@
             different languages.
           </jaxb:javadoc>
         </jaxb:class>
+        <hj:ignored/>
       </xs:appinfo>
     </xs:annotation>
-    <xs:choice maxOccurs="unbounded">
+    <xs:choice maxOccurs="unbounded" minOccurs="0">
       <xs:annotation>
         <xs:appinfo>
           <jaxb:property name="translations"/>
@@ -176,6 +178,12 @@
   </xs:simpleType>
 
   <xs:complexType name="ParameterDeclaration">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:javadoc></jaxb:javadoc>
+        <hj:ignored/>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:sequence>
       <xs:element name="doc" type="Description" minOccurs="0">
         <xs:annotation>
@@ -191,13 +199,9 @@
           </xs:appinfo>
         </xs:annotation>
         <xs:simpleType>
-          <xs:annotation>
-            <xs:appinfo>
-              <xjc:javaType adapter="org.agora_exchange.validation.DomainConverter"
-                name="org.agora_exchange.validation.Validator"/>
-            </xs:appinfo>
-          </xs:annotation>
-          <xs:restriction base="xs:token"/>
+          <xs:restriction base="xs:token">
+            <xs:maxLength value="250"></xs:maxLength>
+          </xs:restriction>
         </xs:simpleType>
       </xs:element>
       <xs:element name="recommend" minOccurs="0">
@@ -251,36 +255,40 @@
           use this as a java.util.HashMap entry, but the JAXB generation
           support for this is still lacking.
         </jaxb:javadoc>
+        <hj:ignored/>
       </xs:appinfo>
     </xs:annotation>
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute name="key" type="xs:token"/>
+        <xs:attribute name="key" type="xs:token" use="required"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
 
   <xs:complexType name="TypeDefinition" abstract="true">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:mapped-superclass/>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="Record">
         <xs:sequence>
-          <xs:element name="doc" type="Description">
+          <xs:element name="doc" minOccurs="0">
             <xs:annotation>
               <xs:appinfo>
                 <jaxb:property name="description"/>
+                <xjc:dom/>
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
-          <xs:sequence>
-            <xs:element name="param" type="ParameterDeclaration"
-              maxOccurs="unbounded">
-              <xs:annotation>
-                <xs:appinfo>
-                  <jaxb:property name="provisioningParameters"/>
-                </xs:appinfo>
-              </xs:annotation>
-            </xs:element>
-          </xs:sequence>
+          <xs:element name="provisioning">
+            <xs:annotation>
+              <xs:appinfo>
+                <xjc:dom/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
         </xs:sequence>
         <xs:attribute name="name" use="required">
           <xs:simpleType>

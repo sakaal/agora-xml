@@ -39,36 +39,55 @@
   <xs:import schemaLocation="agora.xsd" namespace="http://www.agora-exchange.org/XML"/>
 
   <xs:complexType name="DependencyRole">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:embeddable/>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:sequence>
-      <xs:element name="type" type="xs:token">
-        <xs:annotation>
-          <xs:appinfo>
-            <jaxb:property name="typeName"/>
-          </xs:appinfo>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="role" type="xs:token">
-        <xs:annotation>
-          <xs:appinfo>
-            <jaxb:property name="roleName"/>
-          </xs:appinfo>
-        </xs:annotation>
-      </xs:element>
+      <xs:element name="type" type="xs:token"/>
+      <xs:element name="role" type="xs:token" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="ResourceType">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:entity>
+          <orm:table name="resource_type"/>
+        </hj:entity>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="agora:TypeDefinition"/>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="DependencyType">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:entity>
+          <orm:table name="dependency_type"/>
+        </hj:entity>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="agora:TypeDefinition">
         <xs:sequence>
-          <xs:element name="consumer" type="DependencyRole"/>
-          <xs:element name="producer" type="DependencyRole"/>
+          <xs:element name="consumer" type="DependencyRole">
+            <xs:annotation>
+              <xs:appinfo>
+                <hj:embedded/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="producer" type="DependencyRole">
+            <xs:annotation>
+              <xs:appinfo>
+                <hj:embedded/>
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -95,6 +114,11 @@
   </xs:simpleType>
 
   <xs:complexType name="EffectiveInstance" abstract="true">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:mapped-superclass/>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="agora:Record">
         <xs:sequence>
@@ -106,11 +130,10 @@
             </xs:annotation>
           </xs:element>
           <xs:sequence>
-            <xs:element name="set" type="agora:Association"
-              maxOccurs="unbounded">
+            <xs:element name="assignment">
               <xs:annotation>
                 <xs:appinfo>
-                  <jaxb:property name="assignment"/>
+                  <xjc:dom/>
                 </xs:appinfo>
               </xs:annotation>
             </xs:element>
@@ -123,16 +146,15 @@
             </xs:annotation>
           </xs:element>
           <xs:sequence>
-            <xs:element name="at" type="agora:Association"
-              maxOccurs="unbounded">
+            <xs:element name="state">
               <xs:annotation>
                 <xs:appinfo>
-                  <jaxb:property name="state"/>
+                  <xjc:dom/>
                 </xs:appinfo>
               </xs:annotation>
             </xs:element>
           </xs:sequence>
-          <xs:element name="solution" type="agora:UUID">
+          <xs:element name="solution" type="agora:UUID" minOccurs="0">
             <xs:annotation>
               <xs:appinfo>
                 <jaxb:property name="solutionId"/>
@@ -145,6 +167,13 @@
   </xs:complexType>
 
   <xs:complexType name="EffectiveDependency">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:entity>
+          <orm:table name="effective_dependency"/>
+        </hj:entity>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="EffectiveInstance">
         <xs:sequence>
@@ -168,6 +197,13 @@
   </xs:complexType>
 
   <xs:complexType name="EffectiveResource">
+    <xs:annotation>
+      <xs:appinfo>
+        <hj:entity>
+          <orm:table name="effective_resource"/>
+        </hj:entity>
+      </xs:appinfo>
+    </xs:annotation>
     <xs:complexContent>
       <xs:extension base="EffectiveInstance">
         <xs:sequence>
