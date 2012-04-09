@@ -1,0 +1,7 @@
+<!-- a sample for hyperjaxb3 roundtrip tests, which are not working yet -->
+<effective_dependency xmlns="http://www.agora-exchange.org/XML/Supply"
+    id="7e5b601c-803c-11e1-81c7-bf0587b791ca">
+  <created>2012-04-07T01:01:00Z</created>
+  <updated>2012-04-07T01:02:00Z</updated>
+  <reservation></reservation>
+</effective_dependency>

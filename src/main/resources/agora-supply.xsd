@@ -38,6 +38,14 @@
 
   <xs:import schemaLocation="agora.xsd" namespace="http://www.agora-exchange.org/XML"/>
 
+  <xs:element name="resource_type" type="ResourceType"/>
+
+  <xs:element name="dependency_type" type="DependencyType"/>
+
+  <xs:element name="effective_resource" type="EffectiveResource"/>
+
+  <xs:element name="effective_dependency" type="EffectiveDependency"/>
+
   <xs:complexType name="DependencyRole">
     <xs:annotation>
       <xs:appinfo>

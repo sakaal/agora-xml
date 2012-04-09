@@ -1,0 +1,8 @@
+<!-- a sample for hyperjaxb3 roundtrip tests, which are not working yet -->
+<effective_resource xmlns="http://www.agora-exchange.org/XML/Supply"
+    id="7d5a35e0-803b-11e1-bf69-d7c153151df6">
+  <created>2012-04-07T00:51:00Z</created>
+  <updated>2012-04-07T00:52:00Z</updated>
+  <reservation></reservation>
+  <pool></pool>
+</effective_resource>
